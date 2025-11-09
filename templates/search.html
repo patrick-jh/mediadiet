@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Search</h1>
+
+<div style="background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 24px; margin-top: 20px;">
+    <form method="get" action="{{ url_for('search') }}" style="margin-bottom: 24px;">
+        <div style="display: flex; gap: 12px;">
+            <input type="text" name="query" placeholder="Enter media title..." style="width: 50ch;" value="{{ request.args.get('query', '') }}" maxlength="50">
+            <button type="submit" style="padding: 8px 16px; width: 10ch;">Search</button>
+        </div>
+    </form>
+
+    <div id="results">
+        {% if request.args.get('query') %}
+            {% if results %}
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="text-align: left; padding: 8px;">Title</th>
+                            <th style="text-align: left; padding: 8px;">Type</th>
+                            <th style="text-align: left; padding: 8px;">Rating</th>
+                            <th style="text-align: left; padding: 8px;">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in results %}
+                        <tr>
+                            <td style="padding: 8px;">{{ result.title }}</td>
+                            <td style="padding: 8px;">{{ result.media_type }}</td>
+                            <td style="padding: 8px;">{{ result.rating }}/5</td>
+                            <td style="padding: 8px;">{{ result.date.strftime('%Y-%m-%d') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No results. Please enter a different search or use the statistics page to filter.</p>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

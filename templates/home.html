@@ -1,0 +1,188 @@
+<!--<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flexbox Two Column Layout</title>
+    <link rel="stylesheet" href="static/flexboxgrid.min.css">
+   <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f8f9fa;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+            padding: 40px 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .left-column, .right-column {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 24px;
+            margin: 0 16px;
+        }
+        .left-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            min-width: 260px;
+            max-width: 320px;
+        }
+        .right-column {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            min-width: 340px;
+        }
+        .section {
+            background: #f1f3f6;
+            border-radius: 6px;
+            padding: 18px 16px;
+            margin-bottom: 0;
+        }
+        .section h2 {
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+            color: #333;
+        }
+    </style> 
+</head>--->
+{% extends "base.html" %}
+{% block content %}
+        <div style="display: flex; flex: 1;">
+            <div class="left-column">
+    <!--            <div class="section">
+                    <h2>Trends</h2>
+                    <div style="display: flex; align-items: center; gap: 8px; max-width: 180px;">
+                        <span>Recent:</span>
+                        <canvas id="sparkline" width="80" height="20" style="max-width: 100px; height: 20px; display: block"></canvas>
+                    </div>
+                </div>-->
+                <div class="section">
+                    <div style="display: flex; align-items: center; gap: 8px; max-width: 180px;">
+                        <span><h2>Recent: </h2></span>
+                        <canvas id="sparkline" width="100" height="14" style="max-width: 100px; height: 20px; display: block"></canvas>
+                    </div>
+                    <table style="width:100%; border-collapse:collapse; font-size: 0.6em;">
+                        {% for post in recent_posts %}
+                        <tr>
+                            <td style="padding: 6px 8px;">
+                                {% if post.media_type == 'Movie' %}🎬{% elif post.media_type == 'Sports' %}🏆{% elif post.media_type == 'Book' %}📚{% elif post.media_type == 'TV' %}📺{% elif post.media_type == 'Music' %}🎵{% else %}❓{% endif %}
+                                {{ post.title }}
+                            </td>
+                            <td style="padding: 6px 8px;">{{ post.rating }}</td>
+                            <td style="padding: 6px 8px;">{{ post.source }}</td>
+                            <td style="padding: 6px 8px;">{{ post.date.strftime('%Y-%m-%d') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="section">
+                    <h2>Latest recommended</h2>
+                    <table style="width:100%; border-collapse:collapse; font-size: 0.6em;">
+                        {% for rec in recent_recs %}
+                        <tr>
+                            <td style="padding: 6px 8px;">
+                                {% if rec.media_type == 'Movie' %}🎬{% elif rec.media_type == 'Book' %}📚{% elif rec.media_type == 'TV' %}📺{% elif rec.media_type == 'Music' %}🎵{% else %}❓{% endif %}
+                                {{ rec.title }}
+                            </td>
+                            <td style="padding: 6px 8px;">{{ rec.source }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            <div class="right-column">
+                <div class="section">
+                    <h2>🎬 Movies</h2>
+                    <table style="width:100%; border-collapse:collapse;">
+                        {% for movie in recent_movies %}
+                        <tr>
+                            <td style="padding: 6px 8px;">{{ movie.title }}</td>
+                            <td style="padding: 6px 8px;">{{ movie.year_released }}</td>
+                            <td style="padding: 6px 8px;">{{ movie.rating }}</td>
+                            <td style="padding: 6px 8px;">{{ movie.genre }}</td>
+                            <td style="padding: 6px 8px;">{{ movie.source }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="section">
+                    <h2>📺 TV</h2>
+                    <table style="width:100%; border-collapse:collapse;">
+                        {% for tv in recent_tv %}
+                        <tr>
+                            <td style="padding: 6px 8px;">{{ tv.title }}</td>
+                            <td style="padding: 6px 8px;">{{ tv.year_released }}</td>
+                            <td style="padding: 6px 8px;">{{ tv.rating }}</td>
+                            <td style="padding: 6px 8px;">{{ tv.genre }}</td>
+                            <td style="padding: 6px 8px;">{{ tv.source }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="section">
+                    <h2>🎵 Music</h2>
+                    <table style="width:100%; border-collapse:collapse;">
+                        {% for music in recent_music %}
+                        <tr>
+                            <td style="padding: 6px 8px;">{{ music.title }}</td>
+                            <td style="padding: 6px 8px;">{{ music.year_released }}</td>
+                            <td style="padding: 6px 8px;">{{ music.rating }}</td>
+                            <td style="padding: 6px 8px;">{{ music.genre }}</td>
+                            <td style="padding: 6px 8px;">{{ music.source }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="section">
+                    <h2>📚 Books</h2>
+                    <table style="width:100%; border-collapse:collapse;">
+                        {% for book in recent_book %}
+                        <tr>
+                            <td style="padding: 6px 8px;">{{ book.title }}</td>
+                            <td style="padding: 6px 8px;">{{ book.year_released }}</td>
+                            <td style="padding: 6px 8px;">{{ book.rating }}</td>
+                            <td style="padding: 6px 8px;">{{ book.genre }}</td>
+                            <td style="padding: 6px 8px;">{{ book.source }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Chart.js Sparkline Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ratings = {{ recent_ratings|tojson|safe }};
+    const ctx = document.getElementById('sparkline').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: Array(ratings.length).fill(''),
+            datasets: [{
+                data: ratings,
+                borderColor: 'green',
+                backgroundColor: 'rgba(0,0,0,0)',
+                borderWidth: 2,
+                pointRadius: 0,
+                tension: 0.2
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: { display: false },
+                y: { display: false }
+            }
+        }
+    });
+</script>
+{% endblock %}

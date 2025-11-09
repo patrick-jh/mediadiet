@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="display: flex; gap: 32px;">
+    <!-- Left column (2/3) with visualizations -->
+    <div style="flex: 2; display: flex; flex-direction: column; gap: 24px;">
+        <!-- Sparkline visualization -->
+        <div style="background: #fff; padding: 16px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
+            <canvas id="sparkline" height="100"></canvas>
+        </div>
+        <!-- Placeholder for calendar -->
+        <div style="background: #fff; padding: 16px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
+            calendar view
+        </div>
+    </div>
+
+    <!-- Right column (1/3) with filters -->
+    <div style="flex: 1;">
+        <form method="get" action="{{ url_for('calendar') }}" style="display: flex; flex-direction: column; gap: 16px;">
+            <label>
+                Year:
+                <select name="year" id="year">
+                    {% for y in years %}
+                        <option value="{{ y }}" {% if y|string == selected_year %}selected{% endif %}>{{ y }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <label>
+                Media Type:
+                <select name="media_type" id="media_type">
+                    {% for type in media_types %}
+                        <option value="{{ type }}" {% if type == selected_media_type %}selected{% endif %}>{{ type }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <button type="submit">Update View</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ratings = {{ ratings|tojson|safe }};
+    if (ratings && ratings.length > 0) {
+        const ctx = document.getElementById('sparkline').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: ratings.length}, (_, i) => i + 1),
+                datasets: [{
+                    data: ratings,
+                    borderColor: '#2ecc71',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { 
+                        display: false,
+                        grid: { display: false }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        max: 5,
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

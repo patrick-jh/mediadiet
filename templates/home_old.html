@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Recent Entries</h2>
+
+{% if posts %}
+    {% for post in posts %}
+        <div class="post">
+            <h3>{{ post.title }} ({{ post.year_released }})</h3>
+            <p><strong>Type:</strong> {{ post.media_type }} | 
+               <strong>Genre:</strong> {{ post.genre }} |
+               <strong>Source:</strong> {{ post.source or "N/A" }}</p>
+            <p><strong>Rating:</strong> {{ post.rating or "N/A" }} |
+               <strong>DNF:</strong> {{ "Yes" if post.dnf else "No" }} |
+               <strong>Recommended:</strong> {{ "Yes" if post.recommended else "No" }} |
+               <strong>Foreign:</strong> {{ "Yes" if post.foreign else "No" }} 
+               {% if post.country %} ({{ post.country }}){% endif %}</p>
+            {% if post.notes %}
+                <p><em>{{ post.notes }}</em></p>
+            {% endif %}
+            <p><small>Added on {{ post.date.strftime('%Y-%m-%d') }}</small></p>
+            <hr>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No entries yet. <a href="{{ url_for('entry') }}">Add one?</a></p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Add New Entry</h2>
+<form method="POST" action="{{ url_for('entry') }}" style="display: flex; flex-direction: column; gap: 16px; max-width: 1000px;">
+    {{ form.hidden_tag() }}
+
+    <!-- Date field -->
+    <div>
+        {{ form.date.label }}<br>
+        {{ form.date(style="width: 30ch;") }}
+    </div>
+
+    <!-- Title, Source, Rating row -->
+    <div style="display: flex; gap: 16px; align-items: flex-start;">
+        <div style="flex: 2;">
+            {{ form.title.label }}<br>
+            {{ form.title(size=40) }}
+            {% for error in form.title.errors %}
+                <span style="color:red">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div style="flex: 1;">
+            {{ form.source.label }}<br>
+            {{ form.source() }}
+        </div>
+        <div style="flex: 0 0 100px;">
+            {{ form.rating.label }}<br>
+            {{ form.rating() }}
+        </div>
+    </div>
+
+    <!-- Year, Media Type, Genre row -->
+    <div style="display: flex; gap: 16px; align-items: flex-start;">
+        <div style="flex: 1;">
+            {{ form.year_released.label }}<br>
+            {{ form.year_released() }}
+        </div>
+        <div style="flex: 1;">
+            {{ form.media_type.label }}<br>
+            {{ form.media_type(id="media_type") }}
+        </div>
+        <div style="flex: 1;">
+            {{ form.genre.label }}<br>
+            {{ form.genre(id="genre") }}
+        </div>
+    </div>
+
+    <!-- Notes field -->
+    <div>
+        {{ form.notes.label }}<br>
+        {{ form.notes(rows=4, style="width: 100%;") }}
+    </div>
+
+    <!-- Checkboxes row -->
+    <div style="display: flex; gap: 16px; align-items: center;">
+        <div>
+            {{ form.dnf() }} {{ form.dnf.label }}
+        </div>
+        <div>
+            {{ form.recommended() }} {{ form.recommended.label }}
+        </div>
+        <div>
+            {{ form.foreign(id="foreign") }} {{ form.foreign.label }}
+        </div>
+        <div id="country-field" style="display:none;">
+            {{ form.country.label }}
+            {{ form.country() }}
+        </div>
+    </div>
+
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
+
+<script>
+    // Show/hide country if foreign is checked
+    const foreignCheckbox = document.getElementById("foreign");
+    const countryField = document.getElementById("country-field");
+    function toggleCountry() {
+        countryField.style.display = foreignCheckbox.checked ? "block" : "none";
+    }
+    foreignCheckbox.addEventListener("change", toggleCountry);
+    toggleCountry();
+
+    // Dynamic genre dropdown
+    const genreSelect = document.getElementById("genre");
+    const mediaTypeSelect = document.getElementById("media_type");
+
+    const genres = {
+        "Movie": ["Action/Thriller", "Animated", "Comedy", "Documentary", "Drama", "Historical", "Horror", "Indie", "Psychological", "Romance", "Scifi"].sort(),
+        "Book": ["Comic", "Crime", "Fantasy", "Historical Fiction", "Horror", "Literary", "Mystery", "Nonfiction", "Scifi", "Thriller"].sort(),
+        "TV": ["Animated", "Comedy", "Documentary", "Drama", "Dramedy"].sort(),
+        "Music": ["Classic Rock", "Country", "Electronic", "Folk", "Indie", "Jazz", "Pop", "Postrock", "Rap", "Rock"].sort(),
+        "Sports": ["Auto Racing", "Baseball", "Basketball", "Football", "Olympics", "Other", "Soccer"].sort(),
+        "Podcast": ["Commentary", "Entertainment", "News"].sort(),
+        "Museum": ["Art", "History", "Other", "Science"].sort()
+    };
+
+    function updateGenres() {
+        const selected = mediaTypeSelect.value;
+        const options = genres[selected] || [];
+        genreSelect.innerHTML = "";
+        options.forEach(g => {
+            const opt = document.createElement("option");
+            opt.value = g;
+            opt.text = g;
+            genreSelect.add(opt);
+        });
+    }
+
+    mediaTypeSelect.addEventListener("change", updateGenres);
+    updateGenres();
+</script>
+{% endblock %}
